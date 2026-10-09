@@ -1,0 +1,698 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff5f5">
+<title>For Rifa, My Itha ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+:root {
+  --ink:#493743;
+  --pink:#f58eaa;
+  --rose:#b96783;
+  --paper:#fffaf6;
+  --line:#efdfe6;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+  background:linear-gradient(145deg,#fff4ee,#f8e9f4 55%,#e9edff);
+  min-height:100vh;
+  min-height:100dvh;
+}
+button,textarea { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible,textarea:focus-visible {
+  outline:3px solid #cb8bac;
+  outline-offset:3px;
+}
+#app {
+  width:100%;
+  max-width:440px;
+  min-height:100vh;
+  min-height:100dvh;
+  margin:auto;
+  padding:24px 21px max(24px,env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+}
+.screen { animation:appear .5s ease both; }
+.hidden { display:none!important; }
+@keyframes appear {
+  from {opacity:0;transform:translateY(15px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes float {
+  0%,100% {transform:translateY(0) rotate(-5deg)}
+  50% {transform:translateY(-12px) rotate(5deg)}
+}
+@keyframes pop {
+  0% {transform:scale(.7);opacity:0}
+  80% {transform:scale(1.07)}
+  100% {transform:scale(1);opacity:1}
+}
+@keyframes fall {
+  to {transform:translateY(110vh) rotate(650deg);opacity:0}
+}
+.eyebrow {
+  text-transform:uppercase;
+  letter-spacing:2.5px;
+  font-size:10px;
+  font-weight:700;
+  color:var(--rose);
+}
+h1,h2 {
+  font-family:'Playfair Display',serif;
+  line-height:1.2;
+}
+h1 {font-size:clamp(37px,10vw,47px);margin:16px 0}
+h2 {font-size:29px;margin:16px 0 10px}
+p {line-height:1.7}
+.center {text-align:center}
+.art {
+  font-size:76px;
+  display:block;
+  margin:20px 0;
+  animation:float 3.2s ease-in-out infinite;
+  filter:drop-shadow(0 10px 12px #ce93b633);
+}
+.sub {font-size:14px;color:#897481;line-height:1.85}
+.card {
+  background:#ffffffa8;
+  border:1px solid #ffffff;
+  border-radius:22px;
+  padding:17px;
+  line-height:1.8;
+  font-size:13px;
+  margin-top:16px;
+}
+.primary {
+  border:0;
+  width:100%;
+  padding:16px;
+  margin-top:17px;
+  border-radius:17px;
+  color:white;
+  background:var(--ink);
+  font-weight:700;
+  box-shadow:0 7px 18px #49374320;
+  transition:transform .15s;
+}
+.primary:active {transform:scale(.97)}
+.primary:disabled {opacity:.35;cursor:not-allowed}
+.secondary {
+  border:1px solid var(--line);
+  background:#ffffffa8;
+  color:var(--ink);
+  padding:14px 17px;
+  border-radius:16px;
+}
+.tiny {font-size:10px;color:#a28c99;margin-top:17px}
+.top {
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  font-weight:700;
+}
+.track {
+  height:5px;
+  border-radius:9px;
+  overflow:hidden;
+  background:#ebdce5;
+  margin:12px 0 24px;
+}
+.bar {
+  height:100%;
+  width:0;
+  border-radius:9px;
+  background:linear-gradient(90deg,#f58eaa,#bba7ee);
+  transition:width .35s;
+}
+.question {margin:0 0 8px}
+.hint {font-size:12px;color:#957f8d;margin:0 0 20px}
+.answers {display:grid;gap:10px}
+.answer {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  text-align:left;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:#ffffffbf;
+  color:var(--ink);
+  font-size:13px;
+  line-height:1.45;
+  transition:background .2s,transform .2s,border .2s;
+}
+.answer:active {transform:scale(.98)}
+.answer.chosen {
+  background:#ffe4ec;
+  border-color:#ef9cb6;
+}
+.emoji {font-size:23px;flex-shrink:0}
+.reaction {
+  min-height:38px;
+  padding:11px 3px 0;
+  text-align:center;
+  color:#ac6e88;
+  font-size:12px;
+  line-height:1.5;
+}
+.nav {display:flex;gap:10px;margin-top:10px}
+.nav .primary {flex:1;margin:0}
+textarea {
+  display:block;
+  width:100%;
+  min-height:130px;
+  resize:vertical;
+  border:1px solid #ead8e3;
+  border-radius:17px;
+  padding:15px;
+  background:#ffffffc9;
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.7;
+}
+textarea::placeholder {color:#ad98a4}
+.dare-box {
+  text-align:center;
+  background:#ffffffa8;
+  border:1px dashed #dba5bb;
+  padding:22px 16px;
+  border-radius:20px;
+}
+.dare-icon {font-size:47px;display:block;margin-bottom:10px}
+.dare-title {font-family:'Playfair Display',serif;font-size:22px;line-height:1.4}
+.note {
+  white-space:pre-line;
+  text-align:left;
+  font-size:13px;
+  line-height:1.95;
+}
+.pill {
+  display:inline-block;
+  padding:7px 11px;
+  background:#ffffffad;
+  border-radius:99px;
+  font-size:11px;
+  color:#966b82;
+}
+.heart {
+  position:fixed;
+  z-index:5;
+  pointer-events:none;
+  top:-30px;
+  animation:fall 4s linear forwards;
+}
+#status {font-size:12px;color:#a66b85;min-height:20px;margin-top:9px}
+@media(max-height:730px) {
+  #app {padding-top:16px;padding-bottom:16px}
+  h1 {font-size:35px}
+  h2 {font-size:25px}
+  .art {font-size:56px;margin:10px}
+  .track {margin-bottom:17px}
+  .answers {gap:7px}
+  .answer {padding:11px}
+  textarea {min-height:95px}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<main id="app">
+
+  <!-- OPENING -->
+  <section id="intro" class="screen center">
+    <span class="eyebrow">a tiny world, just for you</span>
+    <span class="art">💌</span>
+    <h1>Hey, my<br>beautiful Itha!</h1>
+    <p class="sub">
+      A little birdie told me it's your birthday. 🐣<br>
+      So I made something just for you.
+    </p>
+    <div class="card">
+      🎨 A little love for my favourite artist.<br>
+      😂 A little teasing from your sibling.<br>
+      💗 A few things I want you to know.
+    </div>
+    <button class="primary" onclick="start()">Open your little surprise ✨</button>
+    <div class="tiny">HANDMADE WITH LOVE FOR RIFA ♡</div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="screen hidden">
+    <div class="top">
+      <span id="counter">01 / 12</span>
+      <span>made for Itha ♡</span>
+    </div>
+    <div class="track"><div class="bar" id="bar"></div></div>
+    <span class="eyebrow" id="category"></span>
+    <h2 class="question" id="question"></h2>
+    <p class="hint" id="hint"></p>
+    <div id="choices" class="answers"></div>
+    <div id="reaction" class="reaction" aria-live="polite"></div>
+    <div id="status" aria-live="polite"></div>
+    <div class="nav">
+      <button class="secondary" onclick="back()">← Back</button>
+      <button class="primary" id="next" onclick="advance()" disabled>Next →</button>
+    </div>
+    <div class="tiny center">ONE LITTLE STEP AT A TIME 🌷</div>
+  </section>
+
+  <!-- REVEAL -->
+  <section id="final" class="screen center hidden">
+    <span class="eyebrow">YOU UNLOCKED YOUR SURPRISE</span>
+    <span class="art">🎂💗🎨</span>
+    <span class="pill">for the one and only Rifa</span>
+    <h1>Happy Birthday,<br>my Itha!</h1>
+    <p class="sub">One last thing from my heart. 🥹</p>
+    <div class="card note" id="letter"></div>
+    <p style="font-family:'Playfair Display',serif;font-style:italic">Forever your annoying sibling ♡</p>
+    <button class="primary" onclick="celebrate()">More confetti, please! 🎉</button>
+    <button class="secondary" style="width:100%;margin-top:10px" onclick="downloadAnswers()">
+      Save your answers for us 💌
+    </button>
+    <p class="tiny">YOUR ANSWERS STAY IN THIS BROWSER UNTIL YOU SAVE THEM.</p>
+  </section>
+
+</main>
+
+<script>
+// PERSONALIZE THESE!
+const SISTER_NAME = "Rifa";
+const NICKNAME = "Itha";
+const YOUR_NAME = "Your Name";
+
+// Questions can be choice, text, or dare.
+const questions = [
+{
+ type:"choice", category:"FIRST THINGS FIRST 🌷",
+ q:"Itha, how's your heart doing today?",
+ hint:"No perfect answers needed.",
+ options:[
+  ["🌷","I'm okay, just a little tired"],
+  ["🥹","My mind has been doing too much"],
+  ["🫂","I could really use a hug"],
+  ["💗","I'm happy today!"]
+ ],
+ reactions:[
+  "I hope you get a little rest today 🌷",
+  "One thought at a time, okay? You don't need every answer today 🫂",
+  "Sending the biggest virtual hug ever 🤍",
+  "May you have many more days like this 💗"
+ ]
+},
+{
+ type:"choice", category:"A LITTLE CHECK-IN 🫂",
+ q:"Are you really happy, Itha?",
+ hint:"It's okay if the answer changes from day to day.",
+ options:[
+  ["😊","Yes, genuinely happy!"],
+  ["🌦️","Some days yes, some days no"],
+  ["🌀","My brain won't let me rest"],
+  ["🌱","I'm figuring things out"]
+ ],
+ reactions:[
+  "Protect that happiness, my girl ✨",
+  "You don't need to feel happy every second to be doing okay 🌷",
+  "You deserve some quiet in that busy mind of yours 🫂",
+  "Growing takes time. Be gentle with yourself 🌱"
+ ]
+},
+{
+ type:"choice", category:"SIBLING CONFESSION 😂",
+ q:"Who's the most annoying person in your life?",
+ hint:"Think carefully. The correct answer is obvious.",
+ options:[
+  ["😎","You, obviously"],
+  ["🤭","You. No competition."],
+  ["💗","You, but I love you"],
+  ["🙄","Everyone. I'm surrounded."]
+ ],
+ reactions:[
+  "I accept this prestigious award 🏆",
+  "Twice? You're obsessed with me 😂",
+  "Aww, don't make me emotional now 🥹",
+  "We really are a dramatic family 🤝"
+ ]
+},
+{
+ type:"choice", category:"ARTIST MODE 🎨",
+ q:"What do you love most about being an artist?",
+ hint:"Your creativity is part of your magic.",
+ options:[
+  ["🖌️","Turning imagination into something real"],
+  ["💗","Putting feelings into my art"],
+  ["✨","Making people feel something"],
+  ["🌷","Creating just because I love it"]
+ ],
+ reactions:[
+  "Your imagination deserves a world of its own 🎨",
+  "Maybe that's why your work touches people 💗",
+  "Your art can say things words can't ✨",
+  "Never lose the joy of creating for yourself 🌷"
+ ]
+},
+{
+ type:"choice", category:"A VERY IMPORTANT QUESTION 👀",
+ q:"With 70k+ people watching your art, what matters most?",
+ hint:"Your followers are lucky to see your work.",
+ options:[
+  ["💗","Knowing my art makes someone happy"],
+  ["🌱","Growing and learning"],
+  ["🎨","Staying true to my own style"],
+  ["🫶","Remembering why I started"]
+ ],
+ reactions:[
+  "That little connection can mean everything 💗",
+  "You're allowed to be a beginner at new things, too 🌱",
+  "Your own voice is worth protecting 🎨",
+  "Keep that first spark alive, Itha 🫶"
+ ]
+},
+{
+ type:"text", category:"YOUR WORDS TO ME 💌",
+ q:"Itha, what advice do you want to give me?",
+ hint:"Anything at all. I promise I'll read it with love.",
+ placeholder:"Dear little sibling... I want you to know...",
+ min:2
+},
+{
+ type:"text", category:"HELP ME LOVE YOU BETTER 🫂",
+ q:"What are some things you want me to care about more?",
+ hint:"It can be little things, big things, or things I might not notice.",
+ placeholder:"I wish you would notice... / Please remember...",
+ min:2
+},
+{
+ type:"text", category:"SOMETHING ON YOUR HEART 🌙",
+ q:"Is there anything you wish I understood about you?",
+ hint:"You can be honest. You don't have to make it sound perfect.",
+ placeholder:"Something I want you to understand is...",
+ min:2
+},
+{
+ type:"choice", category:"YOUR NEW CHAPTER 🌼",
+ q:"What are we wishing for your next chapter?",
+ hint:"A little wish for you and your growing family.",
+ options:[
+  ["🌷","Peace, health and happiness"],
+  ["🏡","A home full of love"],
+  ["✨","Beautiful memories together"],
+  ["💗","All of the above, please!"]
+ ],
+ reactions:[
+  "Wishing you gentle days and lots of love 🌷",
+  "May your home feel warm and safe 🏡",
+  "Here's to memories you'll treasure forever ✨",
+  "You deserve all of it, Itha 💗"
+ ]
+},
+{
+ type:"dare", category:"SIBLING DARE #1 😂",
+ q:"Your mission, should you choose to accept it...",
+ hint:"No pressure. Choose a silly challenge!",
+ dares:[
+  ["😂","Send me your most ridiculous selfie."],
+  ["🎤","Send me a 5-second voice note saying 'I am the queen of the family!'"],
+  ["🎨","Draw a tiny cartoon of me in 30 seconds."],
+  ["💃","Do your funniest birthday dance for 5 seconds."]
+ ]
+},
+{
+ type:"dare", category:"A SOFT LITTLE DARE 💗",
+ q:"Okay, artist madam. One heart challenge.",
+ hint:"Pick one. You can always skip it.",
+ dares:[
+  ["💌","Send me one thing you appreciate about us."],
+  ["🫂","Give someone you love a hug today."],
+  ["🌷","Take one minute just for yourself. No overthinking."],
+  ["🎨","Make a tiny doodle that represents happiness."]
+ ]
+},
+{
+ type:"choice", category:"FOREVER YOUR SIBLING 🫶",
+ q:"Do you know that you'll always have me?",
+ hint:"Even when we're both being impossible.",
+ options:[
+  ["🥹","Tell me again"],
+  ["🫂","I need that reminder sometimes"],
+  ["😎","Obviously, you're stuck with me"],
+  ["💗","Always and forever?"]
+ ],
+ reactions:[
+  "You are loved more than you know 💗",
+  "I'll try to remind you, not just on birthdays 🫂",
+  "No refunds, no exchanges 😂",
+  "Always and forever, Itha ♡"
+ ]
+}
+];
+
+let index = 0;
+const answers = Array(questions.length).fill(null);
+const $ = id => document.getElementById(id);
+
+function show(id) {
+ ["intro","quiz","final"].forEach(s => $(s).classList.add("hidden"));
+ $(id).classList.remove("hidden");
+ $(id).style.animation = "none";
+ void $(id).offsetWidth;
+ $(id).style.animation = "";
+ window.scrollTo(0,0);
+}
+
+function start() {
+ show("quiz");
+ render();
+}
+
+function render() {
+ const q = questions[index];
+ $("counter").textContent =
+  `${String(index+1).padStart(2,"0")} / ${questions.length}`;
+ $("bar").style.width = `${index/questions.length*100}%`;
+ $("category").textContent = q.category;
+ $("question").textContent = q.q;
+ $("hint").textContent = q.hint;
+ $("choices").replaceChildren();
+ $("reaction").textContent = "";
+ $("status").textContent = "";
+ $("next").disabled = !isComplete(q,answers[index]);
+ $("next").textContent = index === questions.length-1
+  ? "Unlock my surprise 🎁" : "Next →";
+
+ if(q.type === "choice") {
+  q.options.forEach(([emoji,label],i) => {
+   const b = document.createElement("button");
+   b.className = "answer" + (answers[index] === i ? " chosen" : "");
+   const e = document.createElement("span");
+   e.className = "emoji";
+   e.textContent = emoji;
+   const t = document.createElement("span");
+   t.textContent = label;
+   b.append(e,t);
+   b.setAttribute("aria-pressed",answers[index] === i);
+   b.onclick = () => {
+    answers[index] = i;
+    $("choices").querySelectorAll("button").forEach((el,j)=>{
+     el.classList.toggle("chosen",i===j);
+     el.setAttribute("aria-pressed",i===j);
+    });
+    $("reaction").textContent = q.reactions[i];
+    $("next").disabled = false;
+   };
+   $("choices").append(b);
+  });
+ }
+
+ if(q.type === "text") {
+  const ta = document.createElement("textarea");
+  ta.placeholder = q.placeholder;
+  ta.setAttribute("aria-label",q.q);
+  ta.value = answers[index] || "";
+  ta.maxLength = 1500;
+  ta.oninput = () => {
+   answers[index] = ta.value;
+   $("next").disabled = !isComplete(q,answers[index]);
+   $("status").textContent = ta.value.length
+    ? `${ta.value.length} characters written 💗` : "";
+  };
+  $("choices").append(ta);
+  $("next").textContent = "Save my words & continue →";
+  if(ta.value) $("status").textContent =
+   `${ta.value.length} characters written 💗`;
+ }
+
+ if(q.type === "dare") {
+  const wrap = document.createElement("div");
+  wrap.className = "dare-box";
+  const icon = document.createElement("span");
+  icon.className = "dare-icon";
+  icon.textContent = (answers[index] && answers[index].emoji) || "🎲";
+  const title = document.createElement("div");
+  title.className = "dare-title";
+  title.textContent = (answers[index] && answers[index].text)
+   || "Ready for your dare?";
+  const hint = document.createElement("p");
+  hint.className = "sub";
+  hint.textContent = "Pick a challenge. Skip anything you don't feel like doing.";
+  const choose = document.createElement("button");
+  choose.className = "primary";
+  choose.textContent = "Give me a random dare 🎲";
+  choose.onclick = () => {
+   const d = q.dares[Math.floor(Math.random()*q.dares.length)];
+   answers[index] = {emoji:d[0],text:d[1],done:false};
+   render();
+  };
+  wrap.append(icon,title,hint,choose);
+  if(answers[index] && answers[index].text) {
+   const done = document.createElement("button");
+   done.className = "primary";
+   done.textContent = answers[index].done
+    ? "Dare completed! 💗" : "I did it! ✓";
+   done.onclick = () => {
+    answers[index].done = true;
+    $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
+    $("next").disabled = false;
+    done.textContent = "Dare completed! 💗";
+   };
+   const another = document.createElement("button");
+   another.className = "secondary";
+   another.style.marginTop = "10px";
+   another.textContent = "Give me another dare";
+   another.onclick = () => {
+    answers[index] = null;
+    render();
+   };
+   wrap.append(done,another);
+  }
+  $("choices").append(wrap);
+  $("next").textContent = "Skip / continue →";
+  $("next").disabled = false;
+  if(answers[index] && answers[index].done) {
+   $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
+  }
+ }
+}
+
+function isComplete(q,a) {
+ if(q.type === "text") return typeof a === "string" && a.trim().length >= q.min;
+ if(q.type === "choice") return Number.isInteger(a);
+ return true; // Dares can be skipped; they are for fun.
+}
+
+function advance() {
+ const q = questions[index];
+ if(!isComplete(q,answers[index])) {
+  $("status").textContent = "Just a little answer first, Itha 💗";
+  return;
+ }
+ if(index < questions.length-1) {
+  index++;
+  render();
+ } else {
+  reveal();
+ }
+}
+
+function back() {
+ if(index > 0) {
+  index--;
+  render();
+ } else show("intro");
+}
+
+function reveal() {
+ // Safety check: every choice and written response must be complete.
+ if(questions.some((q,i)=>!isComplete(q,answers[i]))) {
+  index = questions.findIndex((q,i)=>!isComplete(q,answers[i]));
+  render();
+  return;
+ }
+ show("final");
+ $("bar").style.width = "100%";
+ $("letter").textContent =
+`Dear ${NICKNAME}, my Rifa... 💗
+
+Happy Birthday to my favourite artist, my beautiful sister, and one of the most special people in my life.
+
+Thousands of people may know you through your art, but to me, you'll always be my Itha — the person I can tease, laugh with, and love in a way words can never fully explain.
+
+And hey, my little overthinker... 🥹
+
+You don't have to figure everything out today. You don't have to be strong every minute. You are allowed to rest, to feel, to ask for help, and to take things one little step at a time.
+
+I hope you give yourself the same kindness you put into the beautiful things you create. Your worth is so much bigger than your work, your followers, or what you achieve.
+
+And now, a beautiful new chapter is waiting for you. 🌷
+
+As you prepare for motherhood, I wish you comfort, support, good health, peaceful moments, and a home full of love. I hope this journey brings you precious memories and people who care for you just as much as you care for others.
+
+You'll always be my Itha. Life may change, but you'll never outgrow your place in my heart.
+
+And yes, I'm still going to annoy you forever. That's a lifetime subscription. 😂
+
+Keep creating. Keep dreaming. Keep being YOU.
+
+Happy Birthday, Rifa. Happy Birthday, my Itha.
+
+With all my love,
+${YOUR_NAME} ♡`;
+ celebrate();
+}
+
+function celebrate() {
+ const symbols = ["💗","✨","🎀","💖","🌸","🎉","⭐"];
+ for(let i=0;i<45;i++) {
+  const el = document.createElement("span");
+  el.className = "heart";
+  el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+  el.style.left = Math.random()*100+"vw";
+  el.style.fontSize = (14+Math.random()*18)+"px";
+  el.style.animationDuration = (2.5+Math.random()*3)+"s";
+  el.style.animationDelay = Math.random()+"s";
+  document.body.append(el);
+  setTimeout(()=>el.remove(),6500);
+ }
+}
+
+function downloadAnswers() {
+ let report = `A LITTLE LETTER FROM RIFA (${NICKNAME})\n`;
+ report += `Birthday surprise answers\n`;
+ report += `Date: ${new Date().toLocaleDateString()}\n\n`;
+ questions.forEach((q,i) => {
+  const a = answers[i];
+  let response = "No answer";
+  if(q.type === "choice" && Number.isInteger(a)) {
+   response = q.options[a][1];
+  } else if(q.type === "text") {
+   response = a || "No answer";
+  } else if(q.type === "dare") {
+   response = a ? `${a.text} — ${a.done ? "Completed" : "Skipped / not marked done"}` : "Skipped";
+  }
+  report += `${i+1}. ${q.q}\n${response}\n\n`;
+ });
+ const blob = new Blob([report],{type:"text/plain;charset=utf-8"});
+ const url = URL.createObjectURL(blob);
+ const link = document.createElement("a");
+ link.href = url;
+ link.download = "Rifa-birthday-answers.txt";
+ link.click();
+ URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
