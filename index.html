@@ -180,7 +180,7 @@ async function emailAnswers(){
  if(!url.startsWith("https://script.google.com/macros/s/")||url.includes("PASTE_YOUR")){$("sendStatus").textContent="Email setup still needs to be connected by Athif. You can still save the answers as a text file.";return}
  const btn=$("emailButton");btn.disabled=true;$("sendStatus").textContent="Sending your answers to Athif automatically… 💌";
  try{
-  const payload={secret:"CHANGE_THIS_SECRET_TO_A_LONG_RANDOM_VALUE",sisterName:SISTER_NAME,nickname:NICKNAME,senderName:YOUR_NAME,answers:questions.map((q,i)=>({question:q.q,answer:formatAnswer(q,answers[i])})),completedAt:new Date().toLocaleString()};
+  const payload={secret:"Rifa_Birthday_2026_K7mQ9vX2pL8nT5wZ",sisterName:SISTER_NAME,nickname:NICKNAME,senderName:YOUR_NAME,answers:questions.map((q,i)=>({question:q.q,answer:formatAnswer(q,answers[i])})),completedAt:new Date().toLocaleString()};
   await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
   $("sendStatus").textContent="Your answers have been submitted to Athif's email service. 💗 Delivery isn't confirmed by the browser, so Athif should test it before your birthday.";
  }catch(e){$("sendStatus").textContent="Could not send automatically. Please save the answers file and send it to Athif manually."}
