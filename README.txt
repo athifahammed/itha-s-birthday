@@ -30,8 +30,7 @@ F. Click Deploy, authorize the requested permissions, and copy the Web app URL.
 G. In index.html, replace PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE with that URL.
 H. Save the file and redeploy/update your GitHub Pages website.
 
-IMPORTANT: Email is sent only when Rifa taps “Send answers to Athif's Gmail”.
-The website uses a browser POST to the Apps Script web app. Because no-cors mode is used, the page cannot verify delivery; test it yourself before the birthday. If automatic email doesn't arrive, she can tap “Save answers as a text file” and send the file manually.
+IMPORTANT: Once Rifa completes the last question and reaches the birthday reveal, the website automatically submits the answers to the Apps Script email service. There is no separate send button. The website uses a browser POST in no-cors mode, so the page cannot verify delivery; test it yourself before the birthday. If automatic email doesn't arrive, she can tap “Save answers as a text file” and send the file manually.
 
 3) PUBLISH ON GITHUB PAGES
 - Create a public repository, e.g. rifa-birthday.

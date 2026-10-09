@@ -94,12 +94,17 @@ textarea{display:block;width:100%;min-height:100px;resize:vertical;border:1px so
       <figure class="photo-frame"><img src="4.jpg" alt="A memory of us" onerror="this.closest('figure').classList.add('broken')"><figcaption>always in my heart 💗</figcaption></figure>
     </div>
     <div class="card letter" id="letter"></div>
+    <div class="card center gift-joke">
+      <span style="font-size:34px;display:block;animation:float 2.8s ease-in-out infinite">😅💻🎁</span>
+      <strong style="font-family:'Playfair Display',serif;font-size:19px">A small gift disclaimer 😂</strong>
+      <p style="margin:8px 0 0">I don't have enough money for a big gift right now… but I'm a software engineer, so I made you a whole website instead. 😎💗</p>
+      <p style="margin:5px 0 0">Hand-coded with love. Unlimited bugs? Hopefully not. Unlimited love? Always. ♡</p>
+    </div>
     <p style="font-family:'Playfair Display',serif;font-style:italic">Forever your annoying sibling ♡</p>
     <button class="primary" onclick="celebrate()">More confetti, please! 🎉</button>
     <button class="secondary" style="width:100%;margin-top:10px" onclick="downloadAnswers()">Save answers as a text file 💌</button>
-    <button class="secondary" style="width:100%;margin-top:10px" id="emailButton" onclick="emailAnswers()">Send answers to Athif's Gmail ✉️</button>
     <p id="sendStatus" aria-live="polite"></p>
-    <p class="tiny">Your answers are emailed only after you tap the send button.</p>
+    <p class="tiny">Your answers are sent automatically when you finish the last question. 💌</p>
   </section>
 </main>
 <script>
@@ -158,6 +163,7 @@ Happy Birthday, Rifa. Happy Birthday, my Itha.
 With all my love,
 ${YOUR_NAME} ♡`;
  celebrate();
+ emailAnswers();
 }
 function celebrate(){const symbols=["💗","✨","🎀","💖","🌸","🎉","⭐"];for(let i=0;i<55;i++){const el=document.createElement("span");el.className="heart";el.textContent=symbols[Math.floor(Math.random()*symbols.length)];el.style.left=Math.random()*100+"vw";el.style.fontSize=(14+Math.random()*18)+"px";el.style.animationDuration=(2.5+Math.random()*3)+"s";el.style.animationDelay=Math.random()+"s";document.body.append(el);setTimeout(()=>el.remove(),6500)}}
 function makeReport(){
@@ -166,14 +172,17 @@ function makeReport(){
  return report;
 }
 function downloadAnswers(){const blob=new Blob([makeReport()],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download="Rifa-birthday-answers.txt";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+let emailAttempted = false;
 async function emailAnswers(){
+ if(emailAttempted) return;
+ emailAttempted = true;
  const url=GOOGLE_SCRIPT_URL.trim();
- if(!url.startsWith("https://script.google.com/macros/s/")||url.includes("PASTE_YOUR")){$("sendStatus").textContent="Email setup is not finished yet. Athif needs to add the Google Apps Script Web App URL in index.html.";return}
- const btn=$("emailButton");btn.disabled=true;$("sendStatus").textContent="Sending your little letter… 💌";
+ if(!url.startsWith("https://script.google.com/macros/s/")||url.includes("PASTE_YOUR")){$("sendStatus").textContent="Email setup still needs to be connected by Athif. You can still save the answers as a text file.";return}
+ const btn=$("emailButton");btn.disabled=true;$("sendStatus").textContent="Sending your answers to Athif automatically… 💌";
  try{
   const payload={secret:"CHANGE_THIS_SECRET_TO_A_LONG_RANDOM_VALUE",sisterName:SISTER_NAME,nickname:NICKNAME,senderName:YOUR_NAME,answers:questions.map((q,i)=>({question:q.q,answer:formatAnswer(q,answers[i])})),completedAt:new Date().toLocaleString()};
   await fetch(url,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
-  $("sendStatus").textContent="Your answers have been sent to Athif's email service. 💗 If delivery fails, use the Save answers button and send the file manually.";
+  $("sendStatus").textContent="Your answers have been submitted to Athif's email service. 💗 Delivery isn't confirmed by the browser, so Athif should test it before your birthday.";
  }catch(e){$("sendStatus").textContent="Could not send automatically. Please save the answers file and send it to Athif manually."}
  finally{btn.disabled=false}
 }
