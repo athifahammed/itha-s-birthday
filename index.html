@@ -541,7 +541,7 @@ const SISTER_NAME = "Rifa";
 const NICKNAME = "Itha";
 const YOUR_NAME = "Athif";
 
-// Questions can be choice, text, or dare.
+// Questions can be choice, text, yesno, or dare.
 const questions = [
   {
     type: "choice",
@@ -638,216 +638,185 @@ const questions = [
     hint: "Careful, Itha. There is only ONE correct answer. 😌",
     yesText: "YES, obviously! 💗",
     noText: "NO 😈"
+  },
+  {
+    type: "dare",
+    category: "ITHA'S SPECIAL CHALLENGE 🎲",
+    q: "One little dare for my favourite sister! 😂💗",
+    hint: "No escaping this one... just for fun! 😈",
+    dares: [
+      ["😂", "Record a 5-second voice note laughing like a villain."],
+      ["🤳", "Take a funny selfie and show it to Athif."],
+      ["😂", "Look at Athif and say, 'You're the most irritating person I love!'"],
+      ["🥹", "Tell Athif your favourite memory with him."],
+      ["😎", "Give Athif a funny nickname and call him that for the rest of the day."]
+    ]
   }
 ];
-  {
-  type: "dare",
-  category: "ITHA'S SPECIAL CHALLENGE 🎲",
-  q: "One little dare for my favourite sister! 😂💗",
-  hint: "No escaping this one... just for fun! 😈",
-  dares: [
-    ["😂", "Record a 5-second voice note laughing like a villain."],
-    ["🤳", "Take a funny selfie and show it to Athif."],
-    ["😂", "Look at Athif and say, 'You're the most irritating person I love!'"],
-    ["🥹", "Tell Athif your favourite memory with him."],
-    ["😎", "Give Athif a funny nickname and call him that for the rest of the day."]
-  ]
-}
 
 let index = 0;
 const answers = Array(questions.length).fill(null);
 const $ = id => document.getElementById(id);
 
 function show(id) {
- ["intro","quiz","final"].forEach(s => $(s).classList.add("hidden"));
- $(id).classList.remove("hidden");
- $(id).style.animation = "none";
- void $(id).offsetWidth;
- $(id).style.animation = "";
- window.scrollTo(0,0);
+  ["intro", "quiz", "final"].forEach(s => $(s).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  $(id).style.animation = "none";
+  void $(id).offsetWidth;
+  $(id).style.animation = "";
+  window.scrollTo(0, 0);
 }
 
 function start() {
- show("quiz");
- render();
+  index = 0;
+  show("quiz");
+  render();
 }
 
 function render() {
- const q = questions[index];
- $("counter").textContent =
-  `${String(index+1).padStart(2,"0")} / ${questions.length}`;
- $("bar").style.width = `${index/questions.length*100}%`;
- $("category").textContent = q.category;
- $("question").textContent = q.q;
- $("hint").textContent = q.hint;
- $("choices").replaceChildren();
- $("reaction").textContent = "";
- $("status").textContent = "";
- $("next").disabled = !isComplete(q,answers[index]);
- $("next").textContent = index === questions.length-1
-  ? "Unlock my surprise 🎁" : "Next →";
+  const q = questions[index];
+  $("counter").textContent = `${String(index + 1).padStart(2, "0")} / ${questions.length}`;
+  $("bar").style.width = `${index / questions.length * 100}%`;
+  $("category").textContent = q.category;
+  $("question").textContent = q.q;
+  $("hint").textContent = q.hint;
+  $("choices").replaceChildren();
+  $("reaction").textContent = "";
+  $("status").textContent = "";
+  $("next").disabled = !isComplete(q, answers[index]);
+  $("next").textContent = index === questions.length - 1 ? "Unlock my surprise 🎁" : "Next →";
 
- if(q.type === "choice") {
-  q.options.forEach(([emoji,label],i) => {
-   const b = document.createElement("button");
-   b.className = "answer" + (answers[index] === i ? " chosen" : "");
-   const e = document.createElement("span");
-   e.className = "emoji";
-   e.textContent = emoji;
-   const t = document.createElement("span");
-   t.textContent = label;
-   b.append(e,t);
-   b.setAttribute("aria-pressed",answers[index] === i);
-   b.onclick = () => {
-    answers[index] = i;
-    $("choices").querySelectorAll("button").forEach((el,j)=>{
-     el.classList.toggle("chosen",i===j);
-     el.setAttribute("aria-pressed",i===j);
+  if (q.type === "choice") {
+    q.options.forEach(([emoji, label], i) => {
+      const b = document.createElement("button");
+      b.className = "answer" + (answers[index] === i ? " chosen" : "");
+      const e = document.createElement("span");
+      e.className = "emoji";
+      e.textContent = emoji;
+      const t = document.createElement("span");
+      t.textContent = label;
+      b.append(e, t);
+      b.setAttribute("aria-pressed", answers[index] === i);
+      b.onclick = () => {
+        answers[index] = i;
+        $("choices").querySelectorAll("button.answer").forEach((el, j) => {
+          el.classList.toggle("chosen", i === j);
+          el.setAttribute("aria-pressed", i === j);
+        });
+        $("reaction").textContent = q.reactions[i];
+        $("next").disabled = false;
+      };
+      $("choices").append(b);
     });
-    $("reaction").textContent = q.reactions[i];
-    $("next").disabled = false;
-   };
-   $("choices").append(b);
-  });
- }
-
- if(q.type === "text") {
-  const ta = document.createElement("textarea");
-  ta.placeholder = q.placeholder;
-  ta.setAttribute("aria-label",q.q);
-  ta.value = answers[index] || "";
-  ta.maxLength = 1500;
-  ta.oninput = () => {
-   answers[index] = ta.value;
-   $("next").disabled = !isComplete(q,answers[index]);
-   $("status").textContent = ta.value.length
-    ? `${ta.value.length} characters written 💗` : "";
-  };
-  $("choices").append(ta);
-  $("next").textContent = "Save my words & continue →";
-  if(ta.value) $("status").textContent =
-   `${ta.value.length} characters written 💗`;
- }
-
- if(q.type === "dare") {
-  const wrap = document.createElement("div");
-  wrap.className = "dare-box";
-  const icon = document.createElement("span");
-  icon.className = "dare-icon";
-  icon.textContent = (answers[index] && answers[index].emoji) || "🎲";
-  const title = document.createElement("div");
-  title.className = "dare-title";
-  title.textContent = (answers[index] && answers[index].text)
-   || "Ready for your dare?";
-  const hint = document.createElement("p");
-  hint.className = "sub";
-  hint.textContent = "Pick a challenge. Skip anything you don't feel like doing.";
-  const choose = document.createElement("button");
-  choose.className = "primary";
-  choose.textContent = "Give me a random dare 🎲";
-  choose.onclick = () => {
-   const d = q.dares[Math.floor(Math.random()*q.dares.length)];
-   answers[index] = {emoji:d[0],text:d[1],done:false};
-   render();
-  };
-  wrap.append(icon,title,hint,choose);
-  if(answers[index] && answers[index].text) {
-   const done = document.createElement("button");
-   done.className = "primary";
-   done.textContent = answers[index].done
-    ? "Dare completed! 💗" : "I did it! ✓";
-   done.onclick = () => {
-    answers[index].done = true;
-    $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
-    $("next").disabled = false;
-    done.textContent = "Dare completed! 💗";
-   };
-   const another = document.createElement("button");
-   another.className = "secondary";
-   another.style.marginTop = "10px";
-   another.textContent = "Give me another dare";
-   another.onclick = () => {
-    answers[index] = null;
-    render();
-   };
-   wrap.append(done,another);
   }
-  $("choices").append(wrap);
-  $("next").textContent = "Skip / continue →";
-  $("next").disabled = false;
-  if(answers[index] && answers[index].done) {
-   $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
-  }
- }
-}
 
+  if (q.type === "text") {
+    const ta = document.createElement("textarea");
+    ta.placeholder = q.placeholder;
+    ta.setAttribute("aria-label", q.q);
+    ta.value = answers[index] || "";
+    ta.maxLength = 1500;
+    ta.oninput = () => {
+      answers[index] = ta.value;
+      $("next").disabled = !isComplete(q, answers[index]);
+      $("status").textContent = ta.value.length ? `${ta.value.length} characters written 💗` : "";
+    };
+    $("choices").append(ta);
+    $("next").textContent = "Save my words & continue →";
+    if (ta.value) $("status").textContent = `${ta.value.length} characters written 💗`;
   }
 
   if (q.type === "yesno") {
     const area = document.createElement("div");
     area.className = "yesno-area";
-
     const yes = document.createElement("button");
     yes.className = "yesno-btn yes-btn";
-    yes.textContent = q.yesText;
-
+    yes.textContent = answers[index] === true ? "YESSS! 💗" : q.yesText;
     const no = document.createElement("button");
     no.className = "yesno-btn no-btn";
     no.textContent = q.noText;
+    if (answers[index] === true) no.style.display = "none";
 
     function moveNo() {
       const maxX = Math.max(0, area.clientWidth - no.offsetWidth - 8);
       const maxY = Math.max(0, area.clientHeight - no.offsetHeight - 8);
-
-      no.style.left = Math.random() * maxX + "px";
-      no.style.top = Math.random() * maxY + "px";
-
-      $("reaction").textContent =
-        "Hehe, too slow, Itha! Try the pink button 😂💗";
+      no.style.left = `${Math.random() * maxX}px`;
+      no.style.top = `${Math.random() * maxY}px`;
+      $("reaction").textContent = "Hehe, too slow, Itha! Try the pink button 😂💗";
     }
-
     no.addEventListener("pointerenter", moveNo);
     no.addEventListener("touchstart", moveNo, { passive: true });
-
-    no.addEventListener("click", (event) => {
+    no.addEventListener("click", event => {
       event.preventDefault();
       moveNo();
     });
-
     yes.onclick = () => {
       answers[index] = true;
-      $("reaction").textContent =
-        "I KNEW IT! Athif is officially your favourite annoyance 😂💗";
-
+      $("reaction").textContent = "I KNEW IT! Athif is officially your favourite annoyance 😂💗";
       $("next").disabled = false;
       yes.textContent = "YESSS! 💗";
-      yes.style.transform = "scale(1.08)";
       no.style.display = "none";
     };
-
     area.append(yes, no);
     $("choices").append(area);
-
-    $("next").textContent = "Unlock my surprise 🎁";
+    $("next").textContent = "Next →";
     $("next").disabled = answers[index] !== true;
+  }
+
+  if (q.type === "dare") {
+    const wrap = document.createElement("div");
+    wrap.className = "dare-box";
+    const icon = document.createElement("span");
+    icon.className = "dare-icon";
+    icon.textContent = (answers[index] && answers[index].emoji) || "🎲";
+    const title = document.createElement("div");
+    title.className = "dare-title";
+    title.textContent = (answers[index] && answers[index].text) || "Ready for your dare?";
+    const dareHint = document.createElement("p");
+    dareHint.className = "sub";
+    dareHint.textContent = "Pick a challenge. Skip anything you don't feel like doing.";
+    const choose = document.createElement("button");
+    choose.className = "primary";
+    choose.textContent = "Give me a random dare 🎲";
+    choose.onclick = () => {
+      const d = q.dares[Math.floor(Math.random() * q.dares.length)];
+      answers[index] = { emoji: d[0], text: d[1], done: false };
+      render();
+    };
+    wrap.append(icon, title, dareHint, choose);
+    if (answers[index] && answers[index].text) {
+      const done = document.createElement("button");
+      done.className = "primary";
+      done.textContent = answers[index].done ? "Dare completed! 💗" : "I did it! ✓";
+      done.onclick = () => {
+        answers[index].done = true;
+        $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
+        $("next").disabled = false;
+        done.textContent = "Dare completed! 💗";
+      };
+      const another = document.createElement("button");
+      another.className = "secondary";
+      another.style.marginTop = "10px";
+      another.textContent = "Give me another dare";
+      another.onclick = () => {
+        answers[index] = null;
+        render();
+      };
+      wrap.append(done, another);
+    }
+    $("choices").append(wrap);
+    $("next").textContent = index === questions.length - 1 ? "Unlock my surprise 🎁" : "Skip / continue →";
+    $("next").disabled = false;
+    if (answers[index] && answers[index].done) $("reaction").textContent = "MISSION ACCOMPLISHED, ITHA 🏆";
   }
 }
 
-
 function isComplete(q, a) {
-  if (q.type === "text") {
-    return typeof a === "string" && a.trim().length >= q.min;
-  }
-
-  if (q.type === "choice") {
-    return Number.isInteger(a);
-  }
-
-  if (q.type === "yesno") {
-    return a === true;
-  }
-
-  return true;
+  if (q.type === "text") return typeof a === "string" && a.trim().length >= q.min;
+  if (q.type === "choice") return Number.isInteger(a);
+  if (q.type === "yesno") return a === true;
+  if (q.type === "dare") return true; // The dare may be skipped.
+  return false;
 }
 
 function advance() {
