@@ -228,9 +228,110 @@ textarea::placeholder {color:#ad98a4}
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after {animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+/* Cute yes/no mini game */
+.yesno-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 115px;
+  margin-top: 12px;
+  border-radius: 22px;
+  background: #fff7fbad;
+  border: 1px dashed #e7b6cc;
+  overflow: hidden;
+}
+
+.yesno-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 17px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 5px 15px #b9678320;
+}
+
+.yes-btn {
+  color: white;
+  background: linear-gradient(135deg, #f58eaa, #bd79b7);
+  animation: yesPulse 1.8s ease-in-out infinite;
+  z-index: 1;
+}
+
+.no-btn {
+  position: absolute;
+  left: 58%;
+  top: 48px;
+  color: #75566a;
+  background: white;
+  border: 1px solid #efdfe6;
+  transition: left .12s ease, top .12s ease;
+  z-index: 2;
+}
+
+@keyframes yesPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+@keyframes cutePop {
+  0% { opacity: 0; transform: scale(.75) translateY(8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.answer, .card, .pill {
+  animation: cutePop .45s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yes-btn, .answer, .card, .pill {
+    animation: none !important;
+  }
+}
+/* Floating pastel decorations */
+.cute-decor {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .65;
+  font-size: 25px;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 5px 8px #d69ab733);
+}
+
+.decor-bow { top: 12%; left: 5%; }
+.decor-flower { top: 26%; right: 5%; animation-delay: -1.5s; }
+.decor-heart { bottom: 15%; left: 6%; animation-delay: -.8s; }
+.decor-star { bottom: 23%; right: 5%; animation-delay: -2s; }
+
+#app { z-index: 1; }
+
+.primary {
+  transition: transform .2s, box-shadow .2s;
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px #b9678330;
+}
+
+.letter, .note {
+  border: 1px solid #ffffff;
+  box-shadow: 0 12px 32px #b9678315;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cute-decor { animation: none !important; }
+}
 </style>
 </head>
 <body>
+<span class="cute-decor decor-bow" aria-hidden="true">🎀</span>
+<span class="cute-decor decor-flower" aria-hidden="true">🌷</span>
+<span class="cute-decor decor-heart" aria-hidden="true">♡</span>
+<span class="cute-decor decor-star" aria-hidden="true">✨</span>
+
 <main id="app">
 
   <!-- OPENING -->
@@ -281,10 +382,6 @@ textarea::placeholder {color:#ad98a4}
     <div class="card note" id="letter"></div>
     <p style="font-family:'Playfair Display',serif;font-style:italic">Forever your annoying sibling ♡</p>
     <button class="primary" onclick="celebrate()">More confetti, please! 🎉</button>
-    <button class="secondary" style="width:100%;margin-top:10px" onclick="downloadAnswers()">
-      Save your answers for us 💌
-    </button>
-    <p class="tiny">YOUR ANSWERS STAY IN THIS BROWSER UNTIL YOU SAVE THEM.</p>
   </section>
 
 </main>
@@ -293,172 +390,106 @@ textarea::placeholder {color:#ad98a4}
 // PERSONALIZE THESE!
 const SISTER_NAME = "Rifa";
 const NICKNAME = "Itha";
-const YOUR_NAME = "Your Name";
+const YOUR_NAME = "Athif";
 
 // Questions can be choice, text, or dare.
 const questions = [
-{
- type:"choice", category:"FIRST THINGS FIRST 🌷",
- q:"Itha, how's your heart doing today?",
- hint:"No perfect answers needed.",
- options:[
-  ["🌷","I'm okay, just a little tired"],
-  ["🥹","My mind has been doing too much"],
-  ["🫂","I could really use a hug"],
-  ["💗","I'm happy today!"]
- ],
- reactions:[
-  "I hope you get a little rest today 🌷",
-  "One thought at a time, okay? You don't need every answer today 🫂",
-  "Sending the biggest virtual hug ever 🤍",
-  "May you have many more days like this 💗"
- ]
-},
-{
- type:"choice", category:"A LITTLE CHECK-IN 🫂",
- q:"Are you really happy, Itha?",
- hint:"It's okay if the answer changes from day to day.",
- options:[
-  ["😊","Yes, genuinely happy!"],
-  ["🌦️","Some days yes, some days no"],
-  ["🌀","My brain won't let me rest"],
-  ["🌱","I'm figuring things out"]
- ],
- reactions:[
-  "Protect that happiness, my girl ✨",
-  "You don't need to feel happy every second to be doing okay 🌷",
-  "You deserve some quiet in that busy mind of yours 🫂",
-  "Growing takes time. Be gentle with yourself 🌱"
- ]
-},
-{
- type:"choice", category:"SIBLING CONFESSION 😂",
- q:"Who's the most annoying person in your life?",
- hint:"Think carefully. The correct answer is obvious.",
- options:[
-  ["😎","You, obviously"],
-  ["🤭","You. No competition."],
-  ["💗","You, but I love you"],
-  ["🙄","Everyone. I'm surrounded."]
- ],
- reactions:[
-  "I accept this prestigious award 🏆",
-  "Twice? You're obsessed with me 😂",
-  "Aww, don't make me emotional now 🥹",
-  "We really are a dramatic family 🤝"
- ]
-},
-{
- type:"choice", category:"ARTIST MODE 🎨",
- q:"What do you love most about being an artist?",
- hint:"Your creativity is part of your magic.",
- options:[
-  ["🖌️","Turning imagination into something real"],
-  ["💗","Putting feelings into my art"],
-  ["✨","Making people feel something"],
-  ["🌷","Creating just because I love it"]
- ],
- reactions:[
-  "Your imagination deserves a world of its own 🎨",
-  "Maybe that's why your work touches people 💗",
-  "Your art can say things words can't ✨",
-  "Never lose the joy of creating for yourself 🌷"
- ]
-},
-{
- type:"choice", category:"A VERY IMPORTANT QUESTION 👀",
- q:"With 70k+ people watching your art, what matters most?",
- hint:"Your followers are lucky to see your work.",
- options:[
-  ["💗","Knowing my art makes someone happy"],
-  ["🌱","Growing and learning"],
-  ["🎨","Staying true to my own style"],
-  ["🫶","Remembering why I started"]
- ],
- reactions:[
-  "That little connection can mean everything 💗",
-  "You're allowed to be a beginner at new things, too 🌱",
-  "Your own voice is worth protecting 🎨",
-  "Keep that first spark alive, Itha 🫶"
- ]
-},
-{
- type:"text", category:"YOUR WORDS TO ME 💌",
- q:"Itha, what advice do you want to give me?",
- hint:"Anything at all. I promise I'll read it with love.",
- placeholder:"Dear little sibling... I want you to know...",
- min:2
-},
-{
- type:"text", category:"HELP ME LOVE YOU BETTER 🫂",
- q:"What are some things you want me to care about more?",
- hint:"It can be little things, big things, or things I might not notice.",
- placeholder:"I wish you would notice... / Please remember...",
- min:2
-},
-{
- type:"text", category:"SOMETHING ON YOUR HEART 🌙",
- q:"Is there anything you wish I understood about you?",
- hint:"You can be honest. You don't have to make it sound perfect.",
- placeholder:"Something I want you to understand is...",
- min:2
-},
-{
- type:"choice", category:"YOUR NEW CHAPTER 🌼",
- q:"What are we wishing for your next chapter?",
- hint:"A little wish for you and your growing family.",
- options:[
-  ["🌷","Peace, health and happiness"],
-  ["🏡","A home full of love"],
-  ["✨","Beautiful memories together"],
-  ["💗","All of the above, please!"]
- ],
- reactions:[
-  "Wishing you gentle days and lots of love 🌷",
-  "May your home feel warm and safe 🏡",
-  "Here's to memories you'll treasure forever ✨",
-  "You deserve all of it, Itha 💗"
- ]
-},
-{
- type:"dare", category:"SIBLING DARE #1 😂",
- q:"Your mission, should you choose to accept it...",
- hint:"No pressure. Choose a silly challenge!",
- dares:[
-  ["😂","Send me your most ridiculous selfie."],
-  ["🎤","Send me a 5-second voice note saying 'I am the queen of the family!'"],
-  ["🎨","Draw a tiny cartoon of me in 30 seconds."],
-  ["💃","Do your funniest birthday dance for 5 seconds."]
- ]
-},
-{
- type:"dare", category:"A SOFT LITTLE DARE 💗",
- q:"Okay, artist madam. One heart challenge.",
- hint:"Pick one. You can always skip it.",
- dares:[
-  ["💌","Send me one thing you appreciate about us."],
-  ["🫂","Give someone you love a hug today."],
-  ["🌷","Take one minute just for yourself. No overthinking."],
-  ["🎨","Make a tiny doodle that represents happiness."]
- ]
-},
-{
- type:"choice", category:"FOREVER YOUR SIBLING 🫶",
- q:"Do you know that you'll always have me?",
- hint:"Even when we're both being impossible.",
- options:[
-  ["🥹","Tell me again"],
-  ["🫂","I need that reminder sometimes"],
-  ["😎","Obviously, you're stuck with me"],
-  ["💗","Always and forever?"]
- ],
- reactions:[
-  "You are loved more than you know 💗",
-  "I'll try to remind you, not just on birthdays 🫂",
-  "No refunds, no exchanges 😂",
-  "Always and forever, Itha ♡"
- ]
-}
+  {
+    type: "choice",
+    category: "A LITTLE CHECK-IN 🌷",
+    q: "Itha, how is your heart today?",
+    hint: "No wrong answers, my favourite human.",
+    options: [
+      ["🌷", "I'm doing okay"],
+      ["🫂", "I need a little hug"],
+      ["🌦️", "A little tired, honestly"],
+      ["💗", "I'm happy today!"]
+    ],
+    reactions: [
+      "I hope today treats you gently 🌷",
+      "Sending the biggest Athif hug! 🫂",
+      "Rest is allowed, Itha 💗",
+      "Keep that beautiful smile ✨"
+    ]
+  },
+  {
+    type: "choice",
+    category: "SIBLING CONFESSION 😂",
+    q: "Who is the most annoying person ever?",
+    hint: "Think carefully. This is a very serious survey.",
+    options: [
+      ["😎", "Athif, obviously"],
+      ["😂", "Athif by a mile"],
+      ["💗", "Athif, but I love him"],
+      ["🙄", "I refuse to answer"]
+    ],
+    reactions: [
+      "Correct. I accept my award 🏆",
+      "Wow, you didn't even hesitate 😂",
+      "Awww, screenshotting this emotionally 💗",
+      "Objection denied. Athif wins 😂"
+    ]
+  },
+  {
+    type: "choice",
+    category: "ARTIST MADAM 🎨",
+    q: "What should you NEVER stop doing?",
+    hint: "Hint: it's the thing that makes you YOU.",
+    options: [
+      ["🎨", "Creating beautiful art"],
+      ["🌱", "Learning and growing"],
+      ["💗", "Being kind to yourself"],
+      ["✨", "Dreaming ridiculously big"]
+    ],
+    reactions: [
+      "The world needs your creativity 🎨",
+      "You're allowed to grow at your own pace 🌱",
+      "Please give yourself the kindness you give others 💗",
+      "Dream big, artist madam ✨"
+    ]
+  },
+  {
+    type: "text",
+    category: "A MESSAGE FOR ATHIF 💌",
+    q: "Itha, what is one thing you want to tell me?",
+    hint: "Anything from advice to a tiny sibling complaint.",
+    placeholder: "Dear Athif...",
+    min: 2
+  },
+  {
+    type: "text",
+    category: "BROTHER IMPROVEMENT FORM 📝",
+    q: "What should I understand or do better?",
+    hint: "Your honest answer matters to me.",
+    placeholder: "I wish you understood...",
+    min: 2
+  },
+  {
+    type: "choice",
+    category: "YOUR NEXT CHAPTER 🌷",
+    q: "What do I wish for you and your little family?",
+    hint: "You deserve all the good things, Itha.",
+    options: [
+      ["🏡", "A home full of love"],
+      ["🌷", "Peace, health and happiness"],
+      ["✨", "Beautiful memories together"],
+      ["💗", "ALL OF THEM!"]
+    ],
+    reactions: [
+      "May your home always feel safe 🏡",
+      "Wishing you gentle, happy days 🌷",
+      "Here's to memories you'll treasure ✨",
+      "Correct answer. You get the whole universe 💗"
+    ]
+  },
+  {
+    type: "yesno",
+    category: "THE MOST IMPORTANT QUESTION 👀",
+    q: "Do you love your annoying brother Athif?",
+    hint: "Careful, Itha. There is only ONE correct answer. 😌",
+    yesText: "YES, obviously! 💗",
+    noText: "NO 😈"
+  }
 ];
 
 let index = 0;
@@ -587,11 +618,66 @@ function render() {
   }
  }
 }
+  if (q.type === "yesno") {
+  const area = document.createElement("div");
+  area.className = "yesno-area";
 
-function isComplete(q,a) {
- if(q.type === "text") return typeof a === "string" && a.trim().length >= q.min;
- if(q.type === "choice") return Number.isInteger(a);
- return true; // Dares can be skipped; they are for fun.
+  const yes = document.createElement("button");
+  yes.className = "yesno-btn yes-btn";
+  yes.textContent = q.yesText;
+
+  const no = document.createElement("button");
+  no.className = "yesno-btn no-btn";
+  no.textContent = q.noText;
+
+  function moveNo() {
+    const maxX = Math.max(0, area.clientWidth - no.offsetWidth - 8);
+    const maxY = Math.max(0, area.clientHeight - no.offsetHeight - 8);
+
+    no.style.left = Math.random() * maxX + "px";
+    no.style.top = Math.random() * maxY + "px";
+    $("reaction").textContent =
+      "Hehe, too slow, Itha! Try the pink button 😂💗";
+  }
+
+  no.addEventListener("pointerenter", moveNo);
+  no.addEventListener("touchstart", moveNo, { passive: true });
+  no.addEventListener("click", (event) => {
+    event.preventDefault();
+    moveNo();
+  });
+
+  yes.onclick = () => {
+    answers[index] = true;
+    $("reaction").textContent =
+      "I KNEW IT! Athif is officially your favourite annoyance 😂💗";
+    $("next").disabled = false;
+    yes.textContent = "YESSS! 💗";
+    yes.style.transform = "scale(1.08)";
+    no.style.display = "none";
+  };
+
+  area.append(yes, no);
+  $("choices").append(area);
+
+  $("next").textContent = "Unlock my surprise 🎁";
+  $("next").disabled = answers[index] !== true;
+}
+
+function isComplete(q, a) {
+  if (q.type === "text") {
+    return typeof a === "string" && a.trim().length >= q.min;
+  }
+
+  if (q.type === "choice") {
+    return Number.isInteger(a);
+  }
+
+  if (q.type === "yesno") {
+    return a === true;
+  }
+
+  return true;
 }
 
 function advance() {
@@ -667,31 +753,6 @@ function celebrate() {
   document.body.append(el);
   setTimeout(()=>el.remove(),6500);
  }
-}
-
-function downloadAnswers() {
- let report = `A LITTLE LETTER FROM RIFA (${NICKNAME})\n`;
- report += `Birthday surprise answers\n`;
- report += `Date: ${new Date().toLocaleDateString()}\n\n`;
- questions.forEach((q,i) => {
-  const a = answers[i];
-  let response = "No answer";
-  if(q.type === "choice" && Number.isInteger(a)) {
-   response = q.options[a][1];
-  } else if(q.type === "text") {
-   response = a || "No answer";
-  } else if(q.type === "dare") {
-   response = a ? `${a.text} — ${a.done ? "Completed" : "Skipped / not marked done"}` : "Skipped";
-  }
-  report += `${i+1}. ${q.q}\n${response}\n\n`;
- });
- const blob = new Blob([report],{type:"text/plain;charset=utf-8"});
- const url = URL.createObjectURL(blob);
- const link = document.createElement("a");
- link.href = url;
- link.download = "Rifa-birthday-answers.txt";
- link.click();
- URL.revokeObjectURL(url);
 }
 </script>
 </body>
