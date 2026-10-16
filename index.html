@@ -459,6 +459,7 @@ textarea::placeholder {color:#ad98a4}
 </style>
 </head>
 <body>
+<audio id="backgroundMusic" src="1.mp3" loop preload="auto"></audio>
 <span class="cute-decor decor-bow" aria-hidden="true">🎀</span>
 <span class="cute-decor decor-flower" aria-hidden="true">🌷</span>
 <span class="cute-decor decor-heart" aria-hidden="true">♡</span>
@@ -669,6 +670,11 @@ function show(id) {
 
 function start() {
   index = 0;
+  const music = $("backgroundMusic");
+  music.volume = 0.12; // Low background volume (12%)
+  music.play().catch(() => {
+    // Browsers may block playback; the user's click on the start button normally allows it.
+  });
   show("quiz");
   render();
 }
@@ -935,16 +941,7 @@ document.addEventListener("keydown", (event) => {
     closePhotoViewer();
   }
 });
-<audio id="bgMusic" src="1.mp3" loop></audio>
 
-<script>
-  const music = document.getElementById("bgMusic");
-  music.volume = 0.12; // Low volume: 12%
-
-  // Start music when the user clicks the surprise button
-  document.querySelector("button").addEventListener("click", () => {
-    music.play().catch(error => console.log(error));
-  });
 </script>
 </body>
 </html>
