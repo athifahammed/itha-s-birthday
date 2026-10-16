@@ -673,7 +673,7 @@ function show(id) {
 function start() {
   index = 0;
   const music = $("backgroundMusic");
-  music.volume = 0.01; // Low background volume (12%)
+  music.volume = 0.05; // Low background volume (12%)
   music.play().catch(() => {
     // Browsers may block playback; the user's click on the start button normally allows it.
   });
