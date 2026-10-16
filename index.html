@@ -531,6 +531,8 @@ textarea::placeholder {color:#ad98a4}
   <button class="photo-close" aria-label="Close photo">✕</button>
   <img id="zoomedPhoto" src="" alt="Zoomed memory">
 </div>
+    <button class="primary" onclick="shareAnswersWithAthif()" style="margin-top:18px;width:100%">Share all my answers with Athif 💌</button>
+    <p id="shareStatus" class="tiny" aria-live="polite"></p>
     <button class="primary" onclick="celebrate()">More confetti, please! 🎉</button>
   </section>
 
@@ -883,6 +885,46 @@ Happy Birthday, Rifa. Happy Birthday, my Itha.
 With all my love,
 ${YOUR_NAME} ♡`;
  celebrate();
+}
+
+function shareAnswersWithAthif() {
+  const lines = [
+    `💌 Rifa's Birthday Quiz Answers for Athif`,
+    `From: ${NICKNAME} 💗`,
+    ""
+  ];
+
+  questions.forEach((q, i) => {
+    const answer = answers[i];
+    let answerText = "No answer";
+
+    if (q.type === "choice" && Number.isInteger(answer)) {
+      answerText = q.options[answer][1];
+    } else if (q.type === "text") {
+      answerText = answer && answer.trim() ? answer.trim() : "No answer";
+    } else if (q.type === "yesno") {
+      answerText = answer === true ? "YESSS! 💗" : "No answer";
+    } else if (q.type === "dare") {
+      answerText = answer && answer.text
+        ? `${answer.text}${answer.done ? " (completed 🏆)" : " (not marked completed)"}`
+        : "Skipped the dare";
+    }
+
+    lines.push(`${i + 1}. ${q.q}`, `Answer: ${answerText}`, "");
+  });
+
+  lines.push("Happy birthday, Itha! 💗");
+  const message = lines.join("\n");
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  const status = $("shareStatus");
+
+  // WhatsApp opens its contact picker so Rifa can select Athif.
+  const shareWindow = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  if (!shareWindow) {
+    status.textContent = "Pop-up blocked. Allow pop-ups, then tap Share again.";
+  } else {
+    status.textContent = "WhatsApp opened with all answers. Choose Athif and send 💗";
+  }
 }
 
 function celebrate() {
