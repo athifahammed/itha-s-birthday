@@ -673,7 +673,7 @@ function show(id) {
 function start() {
   index = 0;
   const music = $("backgroundMusic");
-  music.volume = 0.12; // Low background volume (12%)
+  music.volume = 0.05; // Low background volume (12%)
   music.play().catch(() => {
     // Browsers may block playback; the user's click on the start button normally allows it.
   });
@@ -855,9 +855,15 @@ function reveal() {
   render();
   return;
  }
- show("final");
- $("bar").style.width = "100%";
- $("letter").textContent =
+show("final");
+
+// 📳 Cute vibration when the birthday wishes appear
+if ("vibrate" in navigator) {
+  navigator.vibrate([150, 80, 150, 80, 300]);
+}
+
+$("bar").style.width = "100%";
+$("letter").textContent =
 `Dear ${NICKNAME}, my Rifa... 💗
 
 Happy Birthday to my favourite artist, my beautiful sister, and one of the most special people in my life.
