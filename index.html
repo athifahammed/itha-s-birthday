@@ -640,6 +640,19 @@ const questions = [
     noText: "NO 😈"
   }
 ];
+  {
+  type: "dare",
+  category: "ITHA'S SPECIAL CHALLENGE 🎲",
+  q: "One little dare for my favourite sister! 😂💗",
+  hint: "No escaping this one... just for fun! 😈",
+  dares: [
+    ["😂", "Record a 5-second voice note laughing like a villain."],
+    ["🤳", "Take a funny selfie and show it to Athif."],
+    ["😂", "Look at Athif and say, 'You're the most irritating person I love!'"],
+    ["🥹", "Tell Athif your favourite memory with him."],
+    ["😎", "Give Athif a funny nickname and call him that for the rest of the day."]
+  ]
+}
 
 let index = 0;
 const answers = Array(questions.length).fill(null);
@@ -767,51 +780,59 @@ function render() {
   }
  }
 }
-  if (q.type === "yesno") {
-  const area = document.createElement("div");
-  area.className = "yesno-area";
 
-  const yes = document.createElement("button");
-  yes.className = "yesno-btn yes-btn";
-  yes.textContent = q.yesText;
-
-  const no = document.createElement("button");
-  no.className = "yesno-btn no-btn";
-  no.textContent = q.noText;
-
-  function moveNo() {
-    const maxX = Math.max(0, area.clientWidth - no.offsetWidth - 8);
-    const maxY = Math.max(0, area.clientHeight - no.offsetHeight - 8);
-
-    no.style.left = Math.random() * maxX + "px";
-    no.style.top = Math.random() * maxY + "px";
-    $("reaction").textContent =
-      "Hehe, too slow, Itha! Try the pink button 😂💗";
   }
 
-  no.addEventListener("pointerenter", moveNo);
-  no.addEventListener("touchstart", moveNo, { passive: true });
-  no.addEventListener("click", (event) => {
-    event.preventDefault();
-    moveNo();
-  });
+  if (q.type === "yesno") {
+    const area = document.createElement("div");
+    area.className = "yesno-area";
 
-  yes.onclick = () => {
-    answers[index] = true;
-    $("reaction").textContent =
-      "I KNEW IT! Athif is officially your favourite annoyance 😂💗";
-    $("next").disabled = false;
-    yes.textContent = "YESSS! 💗";
-    yes.style.transform = "scale(1.08)";
-    no.style.display = "none";
-  };
+    const yes = document.createElement("button");
+    yes.className = "yesno-btn yes-btn";
+    yes.textContent = q.yesText;
 
-  area.append(yes, no);
-  $("choices").append(area);
+    const no = document.createElement("button");
+    no.className = "yesno-btn no-btn";
+    no.textContent = q.noText;
 
-  $("next").textContent = "Unlock my surprise 🎁";
-  $("next").disabled = answers[index] !== true;
+    function moveNo() {
+      const maxX = Math.max(0, area.clientWidth - no.offsetWidth - 8);
+      const maxY = Math.max(0, area.clientHeight - no.offsetHeight - 8);
+
+      no.style.left = Math.random() * maxX + "px";
+      no.style.top = Math.random() * maxY + "px";
+
+      $("reaction").textContent =
+        "Hehe, too slow, Itha! Try the pink button 😂💗";
+    }
+
+    no.addEventListener("pointerenter", moveNo);
+    no.addEventListener("touchstart", moveNo, { passive: true });
+
+    no.addEventListener("click", (event) => {
+      event.preventDefault();
+      moveNo();
+    });
+
+    yes.onclick = () => {
+      answers[index] = true;
+      $("reaction").textContent =
+        "I KNEW IT! Athif is officially your favourite annoyance 😂💗";
+
+      $("next").disabled = false;
+      yes.textContent = "YESSS! 💗";
+      yes.style.transform = "scale(1.08)";
+      no.style.display = "none";
+    };
+
+    area.append(yes, no);
+    $("choices").append(area);
+
+    $("next").textContent = "Unlock my surprise 🎁";
+    $("next").disabled = answers[index] !== true;
+  }
 }
+
 
 function isComplete(q, a) {
   if (q.type === "text") {
