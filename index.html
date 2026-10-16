@@ -984,6 +984,90 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+
+/* ===== CUTE BUILT-IN SOUND EFFECTS ===== */
+let sfxContext;
+
+function playSfx(type) {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    if (!sfxContext) sfxContext = new AudioCtx();
+
+    if (sfxContext.state === "suspended") {
+      sfxContext.resume();
+    }
+
+    const sounds = {
+      click:  { notes: [660], duration: 0.07, volume: 0.045 },
+      answer: { notes: [523, 659], duration: 0.11, volume: 0.055 },
+      reveal: { notes: [523, 659, 784, 1047], duration: 0.19, volume: 0.07 },
+      share:  { notes: [784, 988, 1175], duration: 0.13, volume: 0.05 }
+    };
+
+    const sound = sounds[type];
+    if (!sound) return;
+
+    const now = sfxContext.currentTime;
+
+    sound.notes.forEach((frequency, index) => {
+      const start = now + index * sound.duration * 0.72;
+      const oscillator = sfxContext.createOscillator();
+      const gain = sfxContext.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, start);
+
+      gain.gain.setValueAtTime(0.001, start);
+      gain.gain.exponentialRampToValueAtTime(
+        sound.volume, start + 0.015
+      );
+      gain.gain.exponentialRampToValueAtTime(
+        0.001, start + sound.duration
+      );
+
+      oscillator.connect(gain);
+      gain.connect(sfxContext.destination);
+
+      oscillator.start(start);
+      oscillator.stop(start + sound.duration + 0.02);
+    });
+  } catch (error) {
+    console.log("SFX unavailable:", error);
+  }
+}
+
+/* Automatically choose the appropriate sound */
+document.addEventListener("click", function (event) {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  // Answer selection, including the pink YES button
+  if (button.classList.contains("answer") ||
+      button.classList.contains("yes-btn")) {
+    playSfx("answer");
+    return;
+  }
+
+  // Sharing answers with Athif
+  if ((button.getAttribute("onclick") || "")
+      .includes("shareAnswersWithAthif")) {
+    playSfx("share");
+    return;
+  }
+
+  // Final birthday reveal
+  if (button.id === "next" &&
+      !$("final").classList.contains("hidden")) {
+    playSfx("reveal");
+    return;
+  }
+
+  // All other buttons
+  playSfx("click");
+}, false);
 </script>
 </body>
 </html>
+
